@@ -17,8 +17,3 @@ export interface Project {
   lastChecked?: string;
 }
 
-export interface User {
-  email: string;
-  name: string;
-  domain: string;
-}

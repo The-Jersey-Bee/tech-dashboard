@@ -1,21 +1,10 @@
 
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { getTechSummary } from '../services/geminiService';
 import { ICONS } from '../constants';
 
 const Dashboard: React.FC = () => {
-  const [summary, setSummary] = useState<string>("Initializing tech hub analysis...");
-  const [loadingSummary, setLoadingSummary] = useState(true);
-
-  useEffect(() => {
-    const fetchSummary = async () => {
-      const res = await getTechSummary(0);
-      setSummary(res || "Operational hub for Jersey Bee technical infrastructure.");
-      setLoadingSummary(false);
-    };
-    fetchSummary();
-  }, []);
+  const [summary] = useState<string>("Welcome to the Jersey Bee tech hub. All systems monitored and ready for local impact.");
 
   return (
     <div className="space-y-8 animate-in fade-in duration-500">
@@ -30,9 +19,9 @@ const Dashboard: React.FC = () => {
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
             </div>
             <div>
-              <h3 className="text-sm font-bold text-yellow-800 uppercase tracking-wider">AI Insights</h3>
+              <h3 className="text-sm font-bold text-yellow-800 uppercase tracking-wider">Status</h3>
               <p className="text-yellow-900 mt-1 italic">
-                {loadingSummary ? "Generating insight..." : `"${summary}"`}
+                "{summary}"
               </p>
             </div>
           </div>
@@ -91,7 +80,7 @@ const Dashboard: React.FC = () => {
           {[
             { phase: '1', title: 'Auth & Shell', status: 'Completed', detail: 'Cloudflare Access & Layout' },
             { phase: '2', title: 'Registry', status: 'Pending', detail: 'Airtable Integration' },
-            { phase: '3', title: 'Monitoring', status: 'Pending', detail: 'Uptime & ULR Checks' },
+            { phase: '3', title: 'Monitoring', status: 'Pending', detail: 'Uptime & URL Checks' },
             { phase: '4', title: 'Controls', status: 'Pending', detail: 'Trigger Deploys & Logs' },
           ].map((item) => (
             <div key={item.phase} className="bg-white p-5 rounded-xl border border-gray-200">

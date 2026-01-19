@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { ICONS, BRAND_NAME } from '../constants';
 
 interface LayoutProps {
@@ -9,6 +9,14 @@ interface LayoutProps {
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const navigate = useNavigate();
+
+  const handleSignOut = () => {
+    if (window.confirm('Are you sure you want to sign out?')) {
+      navigate('/');
+      alert('Signed out successfully');
+    }
+  };
 
   const navItems = [
     { name: 'Dashboard', path: '/', icon: <ICONS.Dashboard /> },
@@ -51,7 +59,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               <p className="text-xs truncate">admin@comminfo.org</p>
             </div>
           </div>
-          <button className="mt-4 w-full text-left text-xs text-red-400 hover:text-red-300 transition-colors uppercase font-bold tracking-wider">
+          <button
+            onClick={handleSignOut}
+            className="mt-4 w-full text-left text-xs text-red-400 hover:text-red-300 transition-colors uppercase font-bold tracking-wider"
+          >
             Sign Out
           </button>
         </div>

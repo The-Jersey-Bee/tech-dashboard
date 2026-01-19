@@ -4,6 +4,7 @@ import { HashRouter as Router, Routes, Route } from 'react-router-dom';
 import Layout from './components/Layout';
 import Dashboard from './components/Dashboard';
 import Projects from './components/Projects';
+import ErrorBoundary from './components/ErrorBoundary';
 
 const StatusPlaceholder = () => (
   <div className="py-20 text-center">
@@ -22,14 +23,16 @@ const SettingsPlaceholder = () => (
 const App: React.FC = () => {
   return (
     <Router>
-      <Layout>
-        <Routes>
-          <Route path="/" element={<Dashboard />} />
-          <Route path="/projects" element={<Projects />} />
-          <Route path="/status" element={<StatusPlaceholder />} />
-          <Route path="/settings" element={<SettingsPlaceholder />} />
-        </Routes>
-      </Layout>
+      <ErrorBoundary>
+        <Layout>
+          <Routes>
+            <Route path="/" element={<Dashboard />} />
+            <Route path="/projects" element={<Projects />} />
+            <Route path="/status" element={<StatusPlaceholder />} />
+            <Route path="/settings" element={<SettingsPlaceholder />} />
+          </Routes>
+        </Layout>
+      </ErrorBoundary>
     </Router>
   );
 };
