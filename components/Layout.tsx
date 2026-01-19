@@ -1,7 +1,7 @@
-
 import React, { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { ICONS, BRAND_NAME } from '../constants';
+import { useAuth } from '../contexts/AuthContext';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -10,11 +10,12 @@ interface LayoutProps {
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
+  const { user, logout } = useAuth();
 
   const handleSignOut = () => {
     if (window.confirm('Are you sure you want to sign out?')) {
-      navigate('/');
-      alert('Signed out successfully');
+      logout();
+      navigate('/login');
     }
   };
 
@@ -53,10 +54,19 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         </nav>
         <div className="p-6 border-t border-gray-800">
           <div className="flex items-center space-x-3 text-sm text-gray-400">
-            <ICONS.User />
+            {user?.picture ? (
+              <img
+                src={user.picture}
+                alt={user.name}
+                className="w-8 h-8 rounded-full"
+                referrerPolicy="no-referrer"
+              />
+            ) : (
+              <ICONS.User />
+            )}
             <div className="truncate">
-              <p className="text-white font-medium truncate">CommInfo Admin</p>
-              <p className="text-xs truncate">admin@comminfo.org</p>
+              <p className="text-white font-medium truncate">{user?.name || 'User'}</p>
+              <p className="text-xs truncate">{user?.email || ''}</p>
             </div>
           </div>
           <button

@@ -1,10 +1,12 @@
-
 import React from 'react';
 import { HashRouter as Router, Routes, Route } from 'react-router-dom';
 import Layout from './components/Layout';
 import Dashboard from './components/Dashboard';
 import Projects from './components/Projects';
+import Login from './components/Login';
+import AuthGuard from './components/AuthGuard';
 import ErrorBoundary from './components/ErrorBoundary';
+import { AuthProvider } from './contexts/AuthContext';
 
 const StatusPlaceholder = () => (
   <div className="py-20 text-center">
@@ -23,16 +25,28 @@ const SettingsPlaceholder = () => (
 const App: React.FC = () => {
   return (
     <Router>
-      <ErrorBoundary>
-        <Layout>
+      <AuthProvider>
+        <ErrorBoundary>
           <Routes>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/projects" element={<Projects />} />
-            <Route path="/status" element={<StatusPlaceholder />} />
-            <Route path="/settings" element={<SettingsPlaceholder />} />
+            <Route path="/login" element={<Login />} />
+            <Route
+              path="/*"
+              element={
+                <AuthGuard>
+                  <Layout>
+                    <Routes>
+                      <Route path="/" element={<Dashboard />} />
+                      <Route path="/projects" element={<Projects />} />
+                      <Route path="/status" element={<StatusPlaceholder />} />
+                      <Route path="/settings" element={<SettingsPlaceholder />} />
+                    </Routes>
+                  </Layout>
+                </AuthGuard>
+              }
+            />
           </Routes>
-        </Layout>
-      </ErrorBoundary>
+        </ErrorBoundary>
+      </AuthProvider>
     </Router>
   );
 };
