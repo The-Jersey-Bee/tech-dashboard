@@ -2,6 +2,25 @@
 
 All notable changes to the Tech Dashboard will be documented in this file.
 
+## [0.2.0] - 2026-01-19
+
+### Added
+- **Google Sign-In authentication** - Users must authenticate with Google to access the dashboard
+- **Domain-based access control** - Only users with `@comminfo.org` or `@jerseybee.org` emails can sign in
+- **Invited users list** - Ability to grant access to specific external email addresses via `config/allowedUsers.ts`
+- **Login page** - Full-page login with Jersey Bee branding and official Google Sign-In button
+- **Session persistence** - Auth state stored in localStorage with automatic token expiry handling
+- **User profile in sidebar** - Displays authenticated user's name, email, and Google profile picture
+- **Route protection** - Unauthenticated users are redirected to login page
+
+### Technical Notes
+- Uses `@react-oauth/google` library (~10KB) for client-side OAuth
+- JWT tokens decoded client-side to extract user info
+- No backend required - suitable for static hosting on Cloudflare Pages
+- Environment variable `VITE_GOOGLE_CLIENT_ID` required for Google OAuth
+
+---
+
 ## [0.1.0] - 2026-01-19
 
 ### Removed
