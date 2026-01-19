@@ -18,6 +18,7 @@ All notable changes to the Tech Dashboard will be documented in this file.
 ### Fixed
 - **Typo** - Fixed "ULR" → "URL" in the roadmap section
 - **TypeScript strict mode** - Enabled `strict`, `noUnusedLocals`, and `noUnusedParameters` for better type safety
+- **Cloudflare Pages deployment** - Configured build command (`npm run build`) and output directory (`dist`) for proper production builds
 
 ### Changed
 - Dashboard "AI Insights" section renamed to "Status" with static welcome message
