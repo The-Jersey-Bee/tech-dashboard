@@ -1,0 +1,5 @@
+{
+  "name": "Jersey Bee Tech Dashboard",
+  "description": "A centralized technical operations dashboard for monitoring system health, managing infrastructure, and accessing internal tools for the Jersey Bee team.",
+  "requestFramePermissions": []
+}
