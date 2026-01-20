@@ -2,6 +2,27 @@
 
 All notable changes to the Tech Dashboard will be documented in this file.
 
+## [0.3.1] - 2026-01-20
+
+### Added
+- **Live Health Monitoring** - Real-time service health checks with automatic 5-minute intervals
+  - System status summary with healthy/degraded/down counts
+  - Individual service cards showing response time, status code, and last check time
+  - Manual trigger button to run checks on demand
+  - Add Monitor modal to create new health checks
+  - Refresh button to reload latest data
+- **Public health endpoint** - `/health.json` for monitoring sites behind authentication
+
+### Fixed
+- **Health checks for authenticated sites** - Tech Dashboard now uses `/health.json` endpoint that bypasses Google OAuth
+
+### Technical Notes
+- D1 migrations applied for `health_checks` and `health_results` tables
+- Health checks seeded for Tech Dashboard, Food Pantry Finder, and NJ-11 Candidates Guide
+- Frontend `HealthMonitoring.tsx` now uses real API instead of mock data
+
+---
+
 ## [0.3.0] - 2026-01-20
 
 ### Added
