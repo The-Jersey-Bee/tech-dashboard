@@ -13,6 +13,23 @@ import { scheduledHealthCheck } from './scheduled/health-check';
 
 const app = new Hono<{ Bindings: Env }>();
 
+// Handle OPTIONS preflight requests first
+app.options('*', (c) => {
+  const origin = c.req.header('Origin') || '';
+  const isAllowed =
+    origin.startsWith('http://localhost:') ||
+    origin.startsWith('http://127.0.0.1:') ||
+    origin.includes('.pages.dev') ||
+    origin === c.env.FRONTEND_URL;
+
+  c.header('Access-Control-Allow-Origin', isAllowed ? origin : c.env.FRONTEND_URL);
+  c.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  c.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
+  c.header('Access-Control-Max-Age', '86400');
+
+  return c.body(null, 204);
+});
+
 // Global middleware
 app.use('*', async (c, next) => {
   // Apply CORS
