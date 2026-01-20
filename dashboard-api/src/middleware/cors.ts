@@ -9,7 +9,8 @@ export function corsMiddleware(allowedOrigin: string) {
       origin === allowedOrigin ||
       origin.startsWith('http://localhost:') ||
       origin.startsWith('http://127.0.0.1:') ||
-      origin.includes('.pages.dev');
+      origin.includes('.pages.dev') ||
+      origin.includes('jerseybee.org');
 
     const corsOrigin = isAllowed ? origin : allowedOrigin;
 

@@ -20,6 +20,7 @@ app.options('*', (c) => {
     origin.startsWith('http://localhost:') ||
     origin.startsWith('http://127.0.0.1:') ||
     origin.includes('.pages.dev') ||
+    origin.includes('jerseybee.org') ||
     origin === c.env.FRONTEND_URL;
 
   c.header('Access-Control-Allow-Origin', isAllowed ? origin : c.env.FRONTEND_URL);
