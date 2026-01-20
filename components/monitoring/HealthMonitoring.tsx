@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { mockHealthChecks, mockHealthStatus } from '../../services/mockData';
+import React, { useState, useEffect, useCallback } from 'react';
+import { api } from '../../services/api';
 import type { HealthCheck, HealthStatusSummary } from '../../services/api';
 
 const StatusIndicator: React.FC<{
@@ -171,33 +171,68 @@ const HealthMonitoring: React.FC = () => {
   const [checks, setChecks] = useState<HealthCheck[]>([]);
   const [summary, setSummary] = useState<HealthStatusSummary | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [showAddModal, setShowAddModal] = useState(false);
+  const [triggeringCheck, setTriggeringCheck] = useState<string | null>(null);
   const [newCheck, setNewCheck] = useState({
     name: '',
     url: '',
     method: 'GET',
     expectedStatus: 200,
+    projectId: '',
   });
 
-  useEffect(() => {
-    // Simulate API call - in production, use api.health.getChecks()
-    setTimeout(() => {
-      setChecks(mockHealthChecks);
-      setSummary(mockHealthStatus);
+  const fetchData = useCallback(async () => {
+    try {
+      setError(null);
+      const [checksData, statusData] = await Promise.all([
+        api.health.getChecks(),
+        api.health.getStatus(),
+      ]);
+      setChecks(checksData);
+      setSummary(statusData);
+    } catch (err) {
+      console.error('Failed to fetch health data:', err);
+      setError(err instanceof Error ? err.message : 'Failed to load health data');
+    } finally {
       setLoading(false);
-    }, 500);
+    }
   }, []);
 
-  const handleTriggerCheck = (checkId: string) => {
-    // In production, call api.health.triggerCheck(checkId)
-    console.log('Triggering check:', checkId);
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  const handleTriggerCheck = async (checkId: string) => {
+    setTriggeringCheck(checkId);
+    try {
+      await api.health.triggerCheck(checkId);
+      // Refetch data after triggering
+      await fetchData();
+    } catch (err) {
+      console.error('Failed to trigger check:', err);
+    } finally {
+      setTriggeringCheck(null);
+    }
   };
 
-  const handleAddCheck = () => {
-    // In production, call api.health.createCheck(newCheck)
-    console.log('Adding check:', newCheck);
-    setShowAddModal(false);
-    setNewCheck({ name: '', url: '', method: 'GET', expectedStatus: 200 });
+  const handleAddCheck = async () => {
+    try {
+      await api.health.createCheck({
+        projectId: newCheck.projectId || 'default',
+        name: newCheck.name,
+        url: newCheck.url,
+        method: newCheck.method,
+        expectedStatus: newCheck.expectedStatus,
+      });
+      setShowAddModal(false);
+      setNewCheck({ name: '', url: '', method: 'GET', expectedStatus: 200, projectId: '' });
+      // Refetch data after adding
+      await fetchData();
+    } catch (err) {
+      console.error('Failed to add check:', err);
+      alert(err instanceof Error ? err.message : 'Failed to add health check');
+    }
   };
 
   if (loading) {
@@ -210,6 +245,26 @@ const HealthMonitoring: React.FC = () => {
             <div key={i} className="h-40 bg-gray-200 rounded-lg"></div>
           ))}
         </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex flex-col items-center justify-center py-16">
+        <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mb-4">
+          <svg className="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+          </svg>
+        </div>
+        <h2 className="text-xl font-semibold text-gray-900 mb-2">Failed to load health data</h2>
+        <p className="text-gray-600 mb-4">{error}</p>
+        <button
+          onClick={() => { setLoading(true); fetchData(); }}
+          className="px-4 py-2 bg-yellow-500 text-gray-900 font-semibold rounded-lg hover:bg-yellow-400 transition-colors"
+        >
+          Retry
+        </button>
       </div>
     );
   }
@@ -238,18 +293,51 @@ const HealthMonitoring: React.FC = () => {
       {summary && <StatusSummaryCard summary={summary} />}
 
       {/* Health Checks */}
-      <h2 className="text-lg font-semibold text-gray-900 mt-8 mb-4">
-        Monitored Services
-      </h2>
-      <div className="grid gap-4 md:grid-cols-2">
-        {checks.map((check) => (
-          <HealthCheckCard
-            key={check.id}
-            check={check}
-            onTrigger={() => handleTriggerCheck(check.id)}
-          />
-        ))}
+      <div className="flex items-center justify-between mt-8 mb-4">
+        <h2 className="text-lg font-semibold text-gray-900">
+          Monitored Services
+        </h2>
+        <button
+          onClick={fetchData}
+          className="text-sm text-gray-500 hover:text-gray-700 flex items-center gap-1"
+        >
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+          </svg>
+          Refresh
+        </button>
       </div>
+
+      {checks.length === 0 ? (
+        <div className="bg-white rounded-lg border border-gray-200 p-8 text-center">
+          <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <h3 className="text-lg font-medium text-gray-900 mb-2">No health checks configured</h3>
+          <p className="text-gray-600 mb-4">Add your first health monitor to start tracking service uptime.</p>
+          <button
+            onClick={() => setShowAddModal(true)}
+            className="inline-flex items-center gap-2 px-4 py-2 bg-yellow-500 text-gray-900 font-semibold rounded-lg hover:bg-yellow-400 transition-colors"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+            </svg>
+            Add First Monitor
+          </button>
+        </div>
+      ) : (
+        <div className="grid gap-4 md:grid-cols-2">
+          {checks.map((check) => (
+            <HealthCheckCard
+              key={check.id}
+              check={check}
+              onTrigger={() => handleTriggerCheck(check.id)}
+            />
+          ))}
+        </div>
+      )}
 
       {/* Add Monitor Modal */}
       {showAddModal && (
