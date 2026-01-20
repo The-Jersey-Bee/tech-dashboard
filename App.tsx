@@ -8,12 +8,12 @@ import AuthGuard from './components/AuthGuard';
 import ErrorBoundary from './components/ErrorBoundary';
 import { AuthProvider } from './contexts/AuthContext';
 
-const StatusPlaceholder = () => (
-  <div className="py-20 text-center">
-    <h1 className="text-4xl font-bold text-gray-900 mb-4">System Status</h1>
-    <p className="text-gray-600">Real-time health monitoring coming in Phase 3.</p>
-  </div>
-);
+// Monitoring components
+import Repositories from './components/monitoring/Repositories';
+import CloudflareResources from './components/monitoring/CloudflareResources';
+import HealthMonitoring from './components/monitoring/HealthMonitoring';
+import Controls from './components/monitoring/Controls';
+import ActivityFeed from './components/monitoring/ActivityFeed';
 
 const SettingsPlaceholder = () => (
   <div className="py-20 text-center">
@@ -36,8 +36,12 @@ const App: React.FC = () => {
                   <Layout>
                     <Routes>
                       <Route path="/" element={<Dashboard />} />
+                      <Route path="/repos" element={<Repositories />} />
+                      <Route path="/cloudflare" element={<CloudflareResources />} />
+                      <Route path="/health" element={<HealthMonitoring />} />
+                      <Route path="/activity" element={<ActivityFeed />} />
+                      <Route path="/controls" element={<Controls />} />
                       <Route path="/projects" element={<Projects />} />
-                      <Route path="/status" element={<StatusPlaceholder />} />
                       <Route path="/settings" element={<SettingsPlaceholder />} />
                     </Routes>
                   </Layout>

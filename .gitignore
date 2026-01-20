@@ -30,3 +30,6 @@ firebase-debug.log
 # Cache
 .cache/
 .parcel-cache/
+
+# Playwright MCP
+.playwright-mcp/

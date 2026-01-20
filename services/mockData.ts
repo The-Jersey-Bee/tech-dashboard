@@ -1,0 +1,402 @@
+// Mock data for development - simulates API responses
+import type {
+  GitHubRepo,
+  GitHubActivity,
+  CloudflareWorker,
+  CloudflarePage,
+  CloudflareD1,
+  HealthCheck,
+  HealthStatusSummary,
+  Alert,
+  ActivityItem,
+  Project,
+} from './api';
+
+export const mockGitHubRepos: GitHubRepo[] = [
+  {
+    id: 1,
+    name: 'tech-dashboard',
+    full_name: 'The-Jersey-Bee/tech-dashboard',
+    description: 'Internal tech operations dashboard',
+    html_url: 'https://github.com/The-Jersey-Bee/tech-dashboard',
+    language: 'TypeScript',
+    open_issues_count: 3,
+    pushed_at: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
+    visibility: 'private',
+    health: {
+      status: 'healthy',
+      daysSinceCommit: 0,
+      ciStatus: 'passing',
+      openIssues: 3,
+      openPRs: 1,
+    },
+  },
+  {
+    id: 2,
+    name: 'jersey-bee-website',
+    full_name: 'The-Jersey-Bee/jersey-bee-website',
+    description: 'Main organization website',
+    html_url: 'https://github.com/The-Jersey-Bee/jersey-bee-website',
+    language: 'JavaScript',
+    open_issues_count: 5,
+    pushed_at: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+    visibility: 'public',
+    health: {
+      status: 'healthy',
+      daysSinceCommit: 3,
+      ciStatus: 'passing',
+      openIssues: 5,
+      openPRs: 2,
+    },
+  },
+  {
+    id: 3,
+    name: 'api-services',
+    full_name: 'The-Jersey-Bee/api-services',
+    description: 'Backend API services',
+    html_url: 'https://github.com/The-Jersey-Bee/api-services',
+    language: 'Python',
+    open_issues_count: 12,
+    pushed_at: new Date(Date.now() - 45 * 24 * 60 * 60 * 1000).toISOString(),
+    visibility: 'private',
+    health: {
+      status: 'warning',
+      daysSinceCommit: 45,
+      ciStatus: 'failing',
+      openIssues: 12,
+      openPRs: 0,
+    },
+  },
+  {
+    id: 4,
+    name: 'data-pipeline',
+    full_name: 'The-Jersey-Bee/data-pipeline',
+    description: 'Data processing and ETL pipelines',
+    html_url: 'https://github.com/The-Jersey-Bee/data-pipeline',
+    language: 'Python',
+    open_issues_count: 2,
+    pushed_at: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+    visibility: 'private',
+    health: {
+      status: 'healthy',
+      daysSinceCommit: 7,
+      ciStatus: 'passing',
+      openIssues: 2,
+      openPRs: 1,
+    },
+  },
+];
+
+export const mockGitHubActivity: GitHubActivity[] = [
+  {
+    id: 'act-1',
+    type: 'push',
+    repo: 'The-Jersey-Bee/tech-dashboard',
+    actor: 'dev-user',
+    actorAvatar: 'https://github.com/identicons/dev-user.png',
+    title: 'Add monitoring components',
+    url: 'https://github.com/The-Jersey-Bee/tech-dashboard/commit/abc123',
+    timestamp: new Date(Date.now() - 30 * 60 * 1000).toISOString(),
+  },
+  {
+    id: 'act-2',
+    type: 'workflow',
+    repo: 'The-Jersey-Bee/tech-dashboard',
+    actor: 'GitHub Actions',
+    actorAvatar: 'https://github.com/github.png',
+    title: 'Build and Deploy: success',
+    url: 'https://github.com/The-Jersey-Bee/tech-dashboard/actions/runs/123',
+    timestamp: new Date(Date.now() - 25 * 60 * 1000).toISOString(),
+  },
+  {
+    id: 'act-3',
+    type: 'pr',
+    repo: 'The-Jersey-Bee/jersey-bee-website',
+    actor: 'contributor',
+    actorAvatar: 'https://github.com/identicons/contributor.png',
+    title: 'Update homepage design',
+    url: 'https://github.com/The-Jersey-Bee/jersey-bee-website/pull/42',
+    timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
+  },
+  {
+    id: 'act-4',
+    type: 'issue',
+    repo: 'The-Jersey-Bee/api-services',
+    actor: 'reporter',
+    actorAvatar: 'https://github.com/identicons/reporter.png',
+    title: 'API rate limiting not working',
+    url: 'https://github.com/The-Jersey-Bee/api-services/issues/89',
+    timestamp: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString(),
+  },
+];
+
+export const mockCloudflareWorkers: CloudflareWorker[] = [
+  {
+    id: 'worker-1',
+    name: 'dashboard-api',
+    created_on: '2024-01-15T10:00:00Z',
+    modified_on: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
+  },
+  {
+    id: 'worker-2',
+    name: 'image-optimizer',
+    created_on: '2024-02-01T08:00:00Z',
+    modified_on: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
+  },
+  {
+    id: 'worker-3',
+    name: 'auth-service',
+    created_on: '2024-01-20T14:00:00Z',
+    modified_on: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+  },
+];
+
+export const mockCloudflarePages: CloudflarePage[] = [
+  {
+    id: 'page-1',
+    name: 'tech-dashboard',
+    subdomain: 'tech-dashboard',
+    domains: ['tech.jerseybee.org'],
+    production_branch: 'main',
+    latest_deployment: {
+      id: 'deploy-1',
+      environment: 'production',
+      url: 'https://tech-dashboard.pages.dev',
+      created_on: new Date(Date.now() - 30 * 60 * 1000).toISOString(),
+      deployment_trigger: {
+        metadata: {
+          branch: 'main',
+          commit_hash: 'abc123def',
+          commit_message: 'Add monitoring features',
+        },
+      },
+      latest_stage: {
+        status: 'success',
+      },
+    },
+  },
+  {
+    id: 'page-2',
+    name: 'jersey-bee-website',
+    subdomain: 'jersey-bee-website',
+    domains: ['jerseybee.org', 'www.jerseybee.org'],
+    production_branch: 'main',
+    latest_deployment: {
+      id: 'deploy-2',
+      environment: 'production',
+      url: 'https://jersey-bee-website.pages.dev',
+      created_on: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+      deployment_trigger: {
+        metadata: {
+          branch: 'main',
+          commit_hash: 'def456ghi',
+          commit_message: 'Update footer links',
+        },
+      },
+      latest_stage: {
+        status: 'success',
+      },
+    },
+  },
+];
+
+export const mockCloudflareD1: CloudflareD1[] = [
+  {
+    uuid: 'd1-1',
+    name: 'jersey-bee-dashboard',
+    created_at: '2024-01-15T10:00:00Z',
+  },
+  {
+    uuid: 'd1-2',
+    name: 'user-analytics',
+    created_at: '2024-02-01T08:00:00Z',
+  },
+];
+
+export const mockHealthChecks: HealthCheck[] = [
+  {
+    id: 'hc-1',
+    projectId: 'proj-1',
+    name: 'Jersey Bee Website',
+    url: 'https://jerseybee.org',
+    method: 'GET',
+    expectedStatus: 200,
+    enabled: true,
+    latestResult: {
+      status: 'healthy',
+      responseTime: 145,
+      statusCode: 200,
+      checkedAt: new Date(Date.now() - 5 * 60 * 1000).toISOString(),
+    },
+  },
+  {
+    id: 'hc-2',
+    projectId: 'proj-2',
+    name: 'Tech Dashboard',
+    url: 'https://tech.jerseybee.org',
+    method: 'GET',
+    expectedStatus: 200,
+    enabled: true,
+    latestResult: {
+      status: 'healthy',
+      responseTime: 89,
+      statusCode: 200,
+      checkedAt: new Date(Date.now() - 5 * 60 * 1000).toISOString(),
+    },
+  },
+  {
+    id: 'hc-3',
+    projectId: 'proj-3',
+    name: 'Dashboard API',
+    url: 'https://dashboard-api.jerseybee.workers.dev',
+    method: 'GET',
+    expectedStatus: 200,
+    enabled: true,
+    latestResult: {
+      status: 'degraded',
+      responseTime: 2500,
+      statusCode: 200,
+      checkedAt: new Date(Date.now() - 5 * 60 * 1000).toISOString(),
+    },
+  },
+  {
+    id: 'hc-4',
+    projectId: 'proj-4',
+    name: 'External API',
+    url: 'https://api.example.com/health',
+    method: 'GET',
+    expectedStatus: 200,
+    enabled: true,
+    latestResult: {
+      status: 'down',
+      responseTime: null,
+      statusCode: null,
+      checkedAt: new Date(Date.now() - 5 * 60 * 1000).toISOString(),
+    },
+  },
+];
+
+export const mockHealthStatus: HealthStatusSummary = {
+  totalChecks: 4,
+  healthy: 2,
+  degraded: 1,
+  down: 1,
+  unknown: 0,
+  lastUpdated: new Date().toISOString(),
+};
+
+export const mockAlerts: Alert[] = [
+  {
+    id: 'alert-1',
+    type: 'health_check_failed',
+    severity: 'critical',
+    title: 'External API is down',
+    message: 'Health check failed: Connection timeout',
+    source: 'https://api.example.com/health',
+    acknowledged: false,
+    createdAt: new Date(Date.now() - 10 * 60 * 1000).toISOString(),
+  },
+  {
+    id: 'alert-2',
+    type: 'health_check_failed',
+    severity: 'warning',
+    title: 'Dashboard API is degraded',
+    message: 'Response time: 2500ms (threshold: 2000ms)',
+    source: 'https://dashboard-api.jerseybee.workers.dev',
+    acknowledged: false,
+    createdAt: new Date(Date.now() - 15 * 60 * 1000).toISOString(),
+  },
+  {
+    id: 'alert-3',
+    type: 'deploy_success',
+    severity: 'info',
+    title: 'Deployment successful',
+    message: 'tech-dashboard deployed to production',
+    source: 'tech-dashboard',
+    acknowledged: true,
+    createdAt: new Date(Date.now() - 30 * 60 * 1000).toISOString(),
+  },
+];
+
+export const mockActivityFeed: ActivityItem[] = [
+  {
+    id: 'feed-1',
+    type: 'alert',
+    title: 'External API is down',
+    description: 'Health check failed: Connection timeout',
+    source: 'https://api.example.com/health',
+    timestamp: new Date(Date.now() - 10 * 60 * 1000).toISOString(),
+    severity: 'critical',
+  },
+  {
+    id: 'feed-2',
+    type: 'deploy',
+    title: 'Deployment: tech-dashboard',
+    description: 'Production deployment successful',
+    source: 'tech-dashboard',
+    url: 'https://tech-dashboard.pages.dev',
+    timestamp: new Date(Date.now() - 30 * 60 * 1000).toISOString(),
+    severity: 'info',
+  },
+  {
+    id: 'feed-3',
+    type: 'github',
+    title: 'Add monitoring components',
+    description: 'push by dev-user',
+    source: 'The-Jersey-Bee/tech-dashboard',
+    url: 'https://github.com/The-Jersey-Bee/tech-dashboard/commit/abc123',
+    timestamp: new Date(Date.now() - 35 * 60 * 1000).toISOString(),
+  },
+  {
+    id: 'feed-4',
+    type: 'health',
+    title: 'Dashboard API: degraded',
+    description: 'Response time: 2500ms',
+    source: 'https://dashboard-api.jerseybee.workers.dev',
+    timestamp: new Date(Date.now() - 15 * 60 * 1000).toISOString(),
+    severity: 'warning',
+  },
+];
+
+export const mockProjects: Project[] = [
+  {
+    id: 'proj-1',
+    name: 'Jersey Bee Website',
+    description: 'Main organization website',
+    type: 'pages',
+    url: 'https://jerseybee.org',
+    healthUrl: 'https://jerseybee.org',
+    status: 'online',
+    healthChecks: 1,
+  },
+  {
+    id: 'proj-2',
+    name: 'Tech Dashboard',
+    description: 'Internal operations dashboard',
+    type: 'pages',
+    url: 'https://tech.jerseybee.org',
+    healthUrl: 'https://tech.jerseybee.org',
+    status: 'online',
+    healthChecks: 1,
+  },
+  {
+    id: 'proj-3',
+    name: 'Dashboard API',
+    description: 'Backend API Worker',
+    type: 'worker',
+    url: 'https://dashboard-api.jerseybee.workers.dev',
+    healthUrl: 'https://dashboard-api.jerseybee.workers.dev',
+    status: 'degraded',
+    healthChecks: 1,
+  },
+  {
+    id: 'proj-4',
+    name: 'External Service',
+    description: 'Third-party API integration',
+    type: 'external',
+    url: 'https://api.example.com',
+    healthUrl: 'https://api.example.com/health',
+    status: 'offline',
+    healthChecks: 1,
+  },
+];

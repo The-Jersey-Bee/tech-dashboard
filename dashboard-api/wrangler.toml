@@ -1,0 +1,33 @@
+name = "dashboard-api"
+main = "src/index.ts"
+compatibility_date = "2024-12-01"
+node_compat = true
+
+[observability]
+enabled = true
+
+# D1 Database
+[[d1_databases]]
+binding = "DB"
+database_name = "jersey-bee-dashboard"
+database_id = "36988f3f-3d9e-4c6c-8288-0635ff44c322"
+
+# KV Cache
+[[kv_namespaces]]
+binding = "CACHE"
+id = "798af8b737754dd798359565e595bf13"
+
+# Secrets (set with wrangler secret put)
+# - GITHUB_TOKEN
+# - CLOUDFLARE_API_TOKEN
+# - CLOUDFLARE_ACCOUNT_ID
+# - JWT_SECRET
+
+# Environment variables
+[vars]
+FRONTEND_URL = "http://localhost:3000"
+GITHUB_ORG = "The-Jersey-Bee"
+
+# Scheduled health checks (every 5 minutes)
+[triggers]
+crons = ["*/5 * * * *"]
