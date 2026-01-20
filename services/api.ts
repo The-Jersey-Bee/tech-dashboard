@@ -1,7 +1,23 @@
 // API service for communicating with the dashboard-api Worker
-// In development, we'll use mock data. In production, this would call the Worker.
 
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8787';
+// Determine API URL based on environment
+function getApiBase(): string {
+  // Check for explicit environment variable first
+  if (import.meta.env.VITE_API_URL) {
+    return import.meta.env.VITE_API_URL;
+  }
+
+  // Auto-detect production environment
+  const hostname = typeof window !== 'undefined' ? window.location.hostname : '';
+  if (hostname.includes('.pages.dev') || hostname === 'tech.jerseybee.org') {
+    return 'https://dashboard-api.simon-48b.workers.dev';
+  }
+
+  // Default to localhost for development
+  return 'http://localhost:8787';
+}
+
+const API_BASE = getApiBase();
 
 interface ApiResponse<T> {
   success: boolean;
